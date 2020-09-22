@@ -1,0 +1,9 @@
+# Code to generate output csv files
+
+my_outputpath = Path('Tests_outputs/output9.csv')
+
+with open(my_outputpath, 'w') as csvfile:
+    csvwriter = csv.writer(csvfile)
+    csvwriter.writerow(newdb_hdr)
+    for colu in newrecords:
+        csvwriter.writerow(colu)

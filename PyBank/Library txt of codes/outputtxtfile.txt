@@ -1,0 +1,11 @@
+# Output file generation:
+
+filewrite = open("Outputs/export.txt", "w+")
+filewrite.write("Financial Analysis \n")
+filewrite.write("-----------------------------\n")
+filewrite.write(f"Total Months: {totmonths} \n" )
+filewrite.write(f"Total : ${totpnl} \n" )
+filewrite.write(f"Average Change: ${Avg_change}\n")
+filewrite.write(f"Greatest Increase in Profits: ($ {greates_increase}) in {greates_inc_month}\n")
+filewrite.write(f"Greatest Decrease in Profits: ($ {greates_decrease}) in {greates_dec_month}\n")
+filewrite.close()

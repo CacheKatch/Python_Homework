@@ -1,0 +1,40 @@
+# PYBANK HOMEWORK
+
+'''
+This segment was developed to calculate Total number of months,
+and total profit / loss. 
+step 1 - Import data 
+step 2 - extract the needed information
+step 3 - produce output file: txt form
+
+'''
+# Set up required libraries
+from pathlib import Path
+import csv
+
+# set up the file extraction path . Resources folder has been copied inside this repository
+filepath = Path("Resources/budget_data.csv")
+
+with open(filepath,"r") as csvfile:
+    #print(csv.reader(csvfile))
+    #print(type(csvfile))
+    csvreader = csv.reader(csvfile,delimiter=",")
+    #print(type(csvreader))
+
+    header = next(csvreader)
+
+    #Initialize inner loop variables
+
+    totmonths = 0
+    totpnl = 0
+    
+    # Calculate total period pnl and total months in the period
+    for row in csvreader:
+        #print(type(csvreader))
+        totmonths = totmonths + 1
+        prof_o_loss = int(row[1])
+        totpnl = totpnl + prof_o_loss
+        
+
+    #print(totmonths)
+    #print(totpnl)

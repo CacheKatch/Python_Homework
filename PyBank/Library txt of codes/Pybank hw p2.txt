@@ -1,0 +1,167 @@
+# Set up required libraries
+from pathlib import Path
+import csv
+
+""" 
+This segment was developed to obtain
+the profit and losses changes and obtain the
+greatest increase and decrease in profits
+the last 3 items on the list.
+"""
+# This segment is composed of 3 major elements:
+#   A - Data Extraction
+#   B - Data Manipulation
+#   C - Calculation
+
+# Initialize lists
+records = []
+newrecords = []
+finrec = []
+changes = []
+
+newdb_hdr = ["date", "prior pnl"]
+
+# PART A - DATA EXTRACTION
+
+# set up the file extraction path . Resources folder has been copied inside this repository
+filepath = Path("Resources/budget_data.csv")
+
+with open(filepath,"r") as csvfile: # from this DB we extract date and prior month 
+    #print(csv.reader(csvfile))
+    #print(type(csvfile))
+    csvreader = csv.reader(csvfile,delimiter=",")
+    #print(type(csvreader))
+
+    nxt_12 = next(csvreader) # we are skipping one row on this step(header)
+
+    date = ""
+    prior_pnl = 0
+
+    for item in csvreader:  
+        #date = item[0]
+        #item.append(date)
+        #prior_pnl = int(item[1])
+        #item.append(prior_pnl)
+        #print(date)
+
+        records.append(item)
+  
+    #print(records)
+
+"""
+my_outputpath = Path('Tests_outputs/output9o.csv')
+
+with open(my_outputpath, 'w') as csvfile:
+    csvwriter = csv.writer(csvfile)
+    csvwriter.writerow(newdb_hdr)
+    for colu in records:
+        csvwriter.writerow(colu)
+"""
+
+newdb_hdr.append("current_pnl")
+filepath2 = Path("Resources/budget_data.csv")
+
+with open(filepath2,"r") as csvfile:
+    csvreader = csv.reader(csvfile,delimiter=",")
+    nxt_22 = next(csvreader)
+    nxt_23 = next(csvreader)
+    #nxt_24 = next(csvreader)
+
+    for item in csvreader:
+        current_pnl = int(item[1])
+        item.append(current_pnl)
+        newrecords.append(item)
+
+"""   
+print(newrecords)
+print(records)
+
+my_outputpath = Path('Tests_outputs/output9.csv')
+
+with open(my_outputpath, 'w') as csvfile:
+    csvwriter = csv.writer(csvfile)
+    csvwriter.writerow(newdb_hdr)
+    for colu in newrecords:
+        csvwriter.writerow(colu)
+"""
+
+# PART B - DATA MANIPULATION
+# On this section, the objective is to produce one list with 3
+# columns in same row: date, prior_pnl and current_pnl
+# so that change can be calculated and appended to the new list
+
+# Below is for loop to extract data from newrecords list (we do this first
+# because the newrecords list starts at 1 month behind)
+count = 0
+for row in newrecords:
+    date_item = row[0] # date column is converted into first item
+    cur_pnl_item = int(row[1])
+    finrec.append({'Date': date_item, 'Curpnl':cur_pnl_item, 'Priorpnl': records[count][1] })
+    count = count +1
+
+    
+for row in finrec:
+    #print(f"{row[1]} and {row[2]}")
+    #print(row)
+    current_pnl = int(row['Curpnl'])
+    prior_pnl = int(row['Priorpnl'])
+    change = current_pnl - prior_pnl   
+    date_change = row['Date']
+    #row.append(date_change)
+    #row.append(change)
+    changes.append({'Date': date_change, 'Change':change})
+
+    #print(prior_pnl)
+
+#print(changes)
+
+# PART C - CALCULATION
+
+# Calculate: Average of the changes of the entire period: 
+#Sumation of each row change / total number of registers (or rows)
+# intialize metric variables:
+
+sum_o_changes = 0 # summation of changes initilized
+count_changes = 0
+greates_increase = 0
+greates_decrease = 0
+
+for count in changes:
+     
+    sum_o_changes = sum_o_changes + count['Change']
+    count_changes = count_changes + 1
+    last_change = count['Change']
+
+    if last_change > greates_increase:
+        greates_increase = last_change
+        greates_inc_month = count['Date']
+        #print(greates_inc_month)
+
+    if last_change < greates_decrease:
+        greates_decrease = last_change
+        greates_dec_month = count['Date']
+
+
+#print(sum_o_changes)
+#print(count_changes)
+
+Avg_change = round(sum_o_changes / count_changes,2)
+
+#print(Avg_change)
+#print(f"greatest increase in profits:{greates_increase} in {greates_inc_month}")
+#print(f"greatest decrease in profits:{greates_decrease} in {greates_dec_month}")
+"""
+This segment is designed to generate the output file
+"""
+
+# Output file generation:
+
+filewrite = open("Outputs/export.txt", "w+")
+filewrite.write("Financial Analysis \n")
+filewrite.write("-----------------------------\n")
+filewrite.write(f"Total Months: {totmonths} \n" )
+filewrite.write(f"Total : ${totpnl} \n" )
+filewrite.write(f"Average Change: ${Avg_change}\n")
+filewrite.write(f"Greatest Increase in Profits: ($ {greates_increase}) in {greates_inc_month}\n")
+filewrite.write(f"Greatest Decrease in Profits: ($ {greates_decrease}) in {greates_dec_month}\n")
+filewrite.close()

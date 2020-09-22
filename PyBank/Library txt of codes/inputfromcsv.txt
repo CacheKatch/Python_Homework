@@ -1,0 +1,14 @@
+# Code to extract data from csv files
+
+filepath2 = Path("Resources/budget_data.csv")
+
+with open(filepath2,"r") as csvfile:
+    csvreader = csv.reader(csvfile,delimiter=",")
+    nxt_22 = next(csvreader)
+    nxt_23 = next(csvreader)
+    #nxt_24 = next(csvreader)
+
+    for item in csvreader:
+        current_pnl = int(item[1])
+        item.append(current_pnl)
+        newrecords.append(item)
